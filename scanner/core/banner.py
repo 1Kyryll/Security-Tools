@@ -63,7 +63,7 @@ def grab_banner(host: str, port: int, timeout: float = 3.0) -> Optional[str]:
             except Exception: 
                 pass
 
-def grab_banner(
+def grab_banners(
         open_ports: list[PortResult], 
         workers: int = 50, 
         timeout: float = 3.0,  
