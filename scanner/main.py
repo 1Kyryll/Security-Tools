@@ -15,6 +15,7 @@ from core.banner import grab_banners
 from core.fingerprint import fingerprint
 from output.reporter import ScanReport, to_cli
 from utils.network import parse_port_range, RateLimiter
+from vuln.checks import run_all_checks
 
 
 console = Console()
@@ -159,6 +160,13 @@ def main() -> int:
     elif open_ports:
         services = [fingerprint(p.port, None) for p in open_ports]
     
+    findings = []
+    if services:
+        with console.status("[cyan]Running vulnerability checks..."):
+            findings = run_all_checks(services, host_ip)
+        log.info("Found %d findings", len(findings))
+
+    
     finished_at = datetime.now()
     duration = time.monotonic() - t_start
     
@@ -171,6 +179,7 @@ def main() -> int:
         ports_scanned=len(ports),
         open_ports=open_ports,
         services=services,
+        findings=findings
     )
 
     if args.output in ("cli", "all"):
