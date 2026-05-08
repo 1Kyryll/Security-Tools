@@ -59,3 +59,33 @@ Scan the first 1000 ports on localhost:
 ```bash
 python scanner/main.py -t 127.0.0.1 -p 1-1000
 ```
+
+## Password Audit Tool
+
+This is a simple *password cracker* which detect the hashing algorithm, and tries to match the hash using wordlist user provides. Here is the file structure: 
+
+- `core/` 
+    - `cracker.py` - opens a wordlist file and tries to match hashes using multiple predefined rules
+    - `detector.py` - detects hashing algorithm
+    - `hashes.py` - helper that hashes a plaintext with hashlib 
+- `breach/` 
+    - `hibp.py` - checks whether a password has a breach using `pwnedpasswords` library
+- `output/` 
+    - `reporter.py` - CLI data representation
+- `wordlist/`
+    - `hashes.txt` - **SHA256** hashes for three simple passwords: test, 123, dubai2020
+- `main.py` - application entrypoint 
+
+#### Example usage 
+
+See options and flags:
+
+```bash
+python audit/main.py
+```
+
+Crack passwords in `wordlist/hashes.txt` using `rockyou.txt`(before that you need to download that file):
+
+```bash 
+python audit/main.py -i ./audit/wordlist/hashes.txt -w <path>/rockyou.txt
+```
