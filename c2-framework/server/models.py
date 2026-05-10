@@ -20,7 +20,7 @@ class Task:
     agent_id: str
     command: str
     created_at: datetime
-    status: TaskStatus
+    status: TaskStatus = "pending"
 
 @dataclass
 class Result: 

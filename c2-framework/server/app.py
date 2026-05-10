@@ -40,11 +40,11 @@ def submit_result():
 
 @app.route("/agents", methods={"GET"})
 def list_agents():
-    return jsonify([asdict[a] for a in store.list_agents()])
+    return jsonify([asdict(a) for a in store.list_agents()])
 
 @app.route("/task", methods=["POST"])
 def queue_task():
-    data = request.json()
+    data = request.get_json()
 
     try:
         task = store.queue_task(data["agent_id"], data["command"])
@@ -52,7 +52,7 @@ def queue_task():
     except KeyError as e:
         return jsonify({
             "error": str(e),
-        }, 404)
+        }), 404
 
 @app.route("/results/<agent_id>", methods=["GET"])
 def get_results(agent_id): 

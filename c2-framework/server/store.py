@@ -4,8 +4,8 @@ from datetime import datetime
 from server.models import Agent, Task, Result
 
 _lock = threading.Lock()
-_agents = dict[str, Agent] = {}
-_tasks = dict[str, list[Task]] = {}
+_agents: dict[str, Agent] = {}
+_tasks: dict[str, list[Task]] = {}
 _results: list[Result] = []
 
 def register_or_update_agent(
@@ -36,7 +36,7 @@ def register_or_update_agent(
     
 def list_agents() -> list[Agent]: 
     with _lock: 
-        return list[_agents.values()]
+        return list(_agents.values())
     
 def queue_task(agent_id: str, command: str) -> Task: 
     with _lock: 
