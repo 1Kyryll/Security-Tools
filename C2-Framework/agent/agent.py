@@ -11,6 +11,9 @@ if sys.platform == "win32":
     import ctypes
     _OEM_CP = f"cp{ctypes.windll.kernel32.GetOEMCP()}"
     _ANSI_CP = f"cp{ctypes.windll.kernel32.GetACP()}"
+else:
+    _OEM_CP = "utf-8"
+    _ANSI_CP = "utf-8"
 
 SERVER = "http://127.0.0.1:8000"    # change for cross VM testing
 BEACON_INTERVAL = 5                 # in seconds
