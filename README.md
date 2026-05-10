@@ -2,9 +2,30 @@
 
 A set of tools written in Python for Penetration Testing, searching vulnerabilities within your systems and auditing your credentials. The *Security+ course* inspired me to make this repo; some of these tools could be used in your everyday chores or ethical hacking labs and projects. Repo tools:
 
-- **Port/Vulnerability Scanner** in `scanner/`
-- **Password Audit Tool** in `audit/`
-- **C2 Reverse Shell** in `c2/`
+- **Port/Vulnerability Scanner** in `Port-Scanner/`
+- **Password Audit Tool** in `Password-Audit/`
+- **C2 Reverse Shell** in `C2-Framework/`
+
+## ⚠️ Disclaimer
+
+The offensive security tools provided in this repository are intended **strictly for educational and research purposes**. They are designed to help students, security researchers, and authorized penetration testers learn about vulnerabilities, attack techniques, and defensive countermeasures in controlled, lawful environments such as personal labs, CTF challenges, and systems where the user has **explicit written authorization** to perform security testing.
+
+### Acceptable Use
+- Learning and studying offensive security concepts
+- Use in isolated lab environments you own or control
+- Authorized penetration testing engagements with documented permission
+- Capture-the-Flag (CTF) competitions and intentionally vulnerable training platforms
+
+### Prohibited Use
+- Any use against systems, networks, or devices you do not own or for which you do not have explicit written permission
+- Any unlawful, malicious, or unethical activity
+
+Unauthorized use of these tools against systems you do not own or have permission to test may violate local, state, federal, or international laws, including (but not limited to) the Computer Fraud and Abuse Act (CFAA) in the United States, the Computer Misuse Act in the United Kingdom, and similar legislation worldwide.
+
+### Liability
+The author(s) and contributor(s) of this repository assume **no liability** and are **not responsible** for any misuse, damage, or legal consequences arising from the use of these tools. By using, cloning, or downloading the contents of this repository, you agree that you are solely responsible for your actions and that you will use these tools in compliance with all applicable laws.
+
+**If you do not agree to these terms, do not use this repository.**
 
 ## Setting up the project
 
@@ -88,4 +109,39 @@ Crack passwords in `wordlist/hashes.txt` using `rockyou.txt`(before that you nee
 
 ```bash 
 python audit/main.py -i ./audit/wordlist/hashes.txt -w <path>/rockyou.txt
+```
+
+## Mini C2 Framework
+
+C2 - stands for **Command & Control.** C2 Frameworks allow to *Command and Control* compromised devices, establish a connection between Server, Client and Agent. Agent is basically a malicious application that runs on the victim's machine, while Client(Attacker) receives data and executes commands using C2 Server. Here is a breakdown of the file structure:
+
+- `server/`
+    - `app.py` - a Flask C2 Server.
+    - `models.py` - data models.
+    - `store.py` - an in-memory store of data models.
+- `agent/`
+    - `agent.py` - malicious app that runs on a victim's machine, executes commands on it and sends data to the Client.
+- `operator/`
+    - `cli.py` - attacker's CLI interface for executing commands and getting data from the compromised machine.
+
+#### Example usage 
+
+To fully grasp the concept of C2, you need to setup two VMs, victim(e.g. Ubuntu) and attacker(e.g. Kali). From these VMs clone this github repo. 
+
+Run malicious application in the victim's VM:
+
+```bash
+python C2-Framework/agent/agent.py 
+```
+
+In the attacker's VMs run C2 Server and execute commands:
+
+```bash
+# Init Server
+python -m C2-Framework/server.app 
+
+# Execute commands remotely on the victim's VM
+python C2-Framework/operator/cli.py agents
+python C2-Framework/operator/cli.py task <agent-id-prefix> "whoami"
+python C2-Framework/operator/cli.py task <agent-id-prefix> "ls /etc"
 ```
