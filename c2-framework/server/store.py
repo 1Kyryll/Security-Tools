@@ -44,7 +44,7 @@ def queue_task(agent_id: str, command: str) -> Task:
             raise KeyError(f"Unknown agent: {agent_id}")
 
         task = Task(
-            id=str(uuid.uuid64()),
+            id=str(uuid.uuid4()),
             agent_id=agent_id, 
             command=command, 
             created_at=datetime.now()
@@ -87,4 +87,3 @@ def get_results(agent_id: str) -> list[Result]:
         return [r for r in _results if r.agent_id == agent_id]
     
 
-    
